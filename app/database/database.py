@@ -4,7 +4,7 @@ from core.config import DATABASE_URL
 
 Base = declarative_base()
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL,connect_args={"sslmode": "require"})
 
 SesionLocal = sessionmaker(autocommit = False,autoflush=False,bind=engine)
 

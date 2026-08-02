@@ -30,3 +30,5 @@ def get_current_user(
         raise HTTPException(status_code=400, detail="User Not Exists")
 
     return user
+
+    

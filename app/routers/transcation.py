@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends
 from models.transcation import Transaction
 from models.user_auth import User_models
-from schemas.transcation import Transaction_Response, Create_Transcaion
+from schemas.transaction import Transaction_Response,Create_Transaction
 from auth.oauth import get_current_user
 from database.database import get_db
 from sqlalchemy.orm import Session
@@ -11,11 +11,11 @@ router = APIRouter(prefix="/transaction", tags=["Transaction"])
 
 @router.post("/")
 def create_transaction(
-    tran: Create_Transcaion,
+    tran: Create_Transaction,
     db: Session = Depends(get_db),
     current_user: User_models = Depends(get_current_user),
 ):
-    entry = db.query(Transaction).filter(Transaction.user_id == current_user.id).first()
+    # entry = db.query(Transaction).filter(Transaction.user_id == current_user.id).first()
 
     new_tran = Transaction(
         name=tran.name,

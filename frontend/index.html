@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Expense Tracker - Financial Analytics &amp; Expense Management</title>
+  <meta name="description" content="Premium expense tracker and analytics dashboard powered by FastAPI.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ==================== AUTH SECTION ==================== -->
+    <section id="authSection" class="auth-wrapper">
+
+      <!-- Decorative blobs -->
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="blob blob-3"></div>
+
+      <div class="auth-card">
+
+        <!-- Brand -->
+        <div class="auth-brand">
+          <div class="auth-logo">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="auth-brand-name">SpendWise</span>
+        </div>
+
+        <p class="auth-tagline" id="authTitle">Welcome back</p>
+
+        <!-- ── STEP INDICATOR (shown only during register/OTP) ── -->
+        <div id="stepIndicator" class="step-indicator hidden">
+          <div class="step-item active" id="step1Item">
+            <div class="step-dot">1</div>
+            <span class="step-label">Details</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" id="step2Item">
+            <div class="step-dot">2</div>
+            <span class="step-label">Verify OTP</span>
+          </div>
+          <div class="step-line"></div>
+          <div class="step-item" id="step3Item">
+            <div class="step-dot">✓</div>
+            <span class="step-label">Done</span>
+          </div>
+        </div>
+
+        <!-- Tabs (Login / Register) -->
+        <div class="auth-tabs" id="authTabs">
+          <button id="loginTab" class="auth-tab active">Sign In</button>
+          <button id="registerTab" class="auth-tab">Create Account</button>
+        </div>
+
+        <!-- ── STEP 1: Login or Register Form ── -->
+        <form id="authForm" class="auth-form" autocomplete="off">
+          <div id="nameGroup" class="field-group hidden">
+            <label class="field-label" for="authName">Full Name</label>
+            <div class="field-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              <input type="text" id="authName" class="input-field" placeholder="John Doe">
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label class="field-label" for="authEmail">Email Address</label>
+            <div class="field-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              <input type="email" id="authEmail" class="input-field" placeholder="you@example.com" required>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <div class="field-label-row">
+              <label class="field-label" for="authPassword">Password</label>
+              <a href="#" id="forgotPasswordLink" class="link-subtle">Forgot password?</a>
+            </div>
+            <div class="field-wrap">
+              <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              <input type="password" id="authPassword" class="input-field" placeholder="••••••••" required>
+            </div>
+          </div>
+
+          <button type="submit" id="authSubmitBtn" class="btn-primary">
+            <span id="authBtnText">Sign In</span>
+            <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+          </button>
+        </form>
+
+        <!-- ── STEP 2: OTP Verification Screen ── -->
+        <div id="otpScreen" class="hidden">
+          <div class="otp-hero">
+            <div class="otp-hero-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            </div>
+            <h3 class="otp-hero-title">Check your inbox</h3>
+            <p class="otp-hero-desc">We sent a 6-digit code to</p>
+            <p id="otpTargetEmail" class="otp-target-email">user@example.com</p>
+          </div>
+
+          <form id="otpForm" class="auth-form" autocomplete="off">
+            <div class="field-group">
+              <label class="field-label" for="otpInput">Verification Code</label>
+              <input type="text" id="otpInput" class="input-field otp-input" placeholder="· · · · · ·" maxlength="6" pattern="[0-9]{6}" autocomplete="one-time-code" inputmode="numeric" required>
+            </div>
+
+            <button type="submit" id="otpSubmitBtn" class="btn-primary">
+              <span>Verify &amp; Continue</span>
+              <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </button>
+          </form>
+
+          <div class="otp-footer">
+            <span class="otp-resend-label">Didn't get it?</span>
+            <button type="button" id="resendOtpBtn" class="btn-link" disabled>
+              Resend code <span id="resendTimer" class="resend-timer">(30s)</span>
+            </button>
+          </div>
+          <div class="otp-back-row">
+            <a href="#" id="backToLoginFromOtp" class="link-subtle">← Back to Sign In</a>
+          </div>
+        </div>
+
+        <!-- ── Forgot Password Screen ── -->
+        <div id="forgotScreen" class="hidden">
+          <div class="forgot-header">
+            <div class="forgot-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            </div>
+            <h3 class="forgot-title">Reset Password</h3>
+            <p class="forgot-desc">Enter your email and we'll send a reset code</p>
+          </div>
+
+          <div id="forgotStep1" class="auth-form">
+            <div class="field-group">
+              <label class="field-label" for="forgotEmail">Email Address</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+                <input type="email" id="forgotEmail" class="input-field" placeholder="you@example.com">
+              </div>
+            </div>
+            <button type="button" id="sendResetOtpBtn" class="btn-primary">Send Reset Code</button>
+          </div>
+
+          <div id="forgotStep2" class="auth-form hidden">
+            <div class="field-group">
+              <label class="field-label" for="resetOtpInput">Reset Code</label>
+              <input type="text" id="resetOtpInput" class="input-field otp-input" placeholder="· · · · · ·" maxlength="6">
+            </div>
+            <div class="field-group">
+              <label class="field-label" for="newPasswordInput">New Password</label>
+              <div class="field-wrap">
+                <svg class="field-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                <input type="password" id="newPasswordInput" class="input-field" placeholder="••••••••">
+              </div>
+            </div>
+            <button type="button" id="submitResetPasswordBtn" class="btn-primary">Set New Password</button>
+          </div>
+
+          <div class="otp-back-row">
+            <a href="#" id="backToLoginFromForgot" class="link-subtle">← Back to Sign In</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== MAIN DASHBOARD SECTION ==================== -->
+    <section id="mainAppSection" class="hidden main-app">
+
+      <!-- Navbar -->
+      <header class="navbar">
+        <div class="navbar-brand">
+          <div class="navbar-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <span class="navbar-title">SpendWise</span>
+        </div>
+
+        <nav class="navbar-actions">
+          <button id="openDateRangeModalBtn" class="nav-btn" title="Date Range Analysis">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <span>Date Range</span>
+          </button>
+          <button id="openSettingsBtn" class="nav-btn" title="Account Settings">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            <span>Settings</span>
+          </button>
+          <div class="navbar-user">
+            <div class="user-avatar" id="userAvatar">U</div>
+            <div class="user-info">
+              <span class="user-name" id="userName">User</span>
+              <span class="user-email" id="userEmail">user@example.com</span>
+            </div>
+          </div>
+          <button id="logoutBtn" class="nav-btn nav-btn-danger">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span>Logout</span>
+          </button>
+        </nav>
+      </header>
+
+      <!-- Stat Cards -->
+      <div class="stats-grid">
+
+        <div class="stat-card stat-balance">
+          <div class="stat-top">
+            <span class="stat-label">Net Balance</span>
+            <div class="stat-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="totalBalance">₹0.00</div>
+          <div class="stat-sub">Overall standing</div>
+        </div>
+
+        <div class="stat-card stat-income">
+          <div class="stat-top">
+            <span class="stat-label">Total Income</span>
+            <div class="stat-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="totalIncome">₹0.00</div>
+          <div class="stat-sub">Highest: <strong id="highestIncome">₹0.00</strong></div>
+        </div>
+
+        <div class="stat-card stat-expense">
+          <div class="stat-top">
+            <span class="stat-label">Total Expense</span>
+            <div class="stat-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="totalExpense">₹0.00</div>
+          <div class="stat-sub">Highest: <strong id="highestExpense">₹0.00</strong></div>
+        </div>
+
+        <div class="stat-card stat-count">
+          <div class="stat-top">
+            <span class="stat-label">Transactions</span>
+            <div class="stat-icon-wrap">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            </div>
+          </div>
+          <div class="stat-value" id="totalTxCount">0</div>
+          <div class="stat-sub">Lowest expense: <strong id="lowestExpense">₹0.00</strong></div>
+        </div>
+
+      </div>
+
+      <!-- Main content grid -->
+      <div class="content-grid">
+
+        <!-- Left: Transaction Table -->
+        <main class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">Transaction History</h2>
+            <div class="toolbar">
+              <div class="search-wrap">
+                <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="text" id="searchInput" class="input-field search-input" placeholder="Search transactions…">
+              </div>
+              <select id="sortSelect" class="input-field sort-select">
+                <option value="date-desc" selected>↓ Newest</option>
+                <option value="date-asc">↑ Oldest</option>
+                <option value="amount-desc">↓ Highest</option>
+                <option value="amount-asc">↑ Lowest</option>
+              </select>
+              <button id="openAddTxBtn" class="btn-primary btn-sm">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New
+              </button>
+            </div>
+          </div>
+
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                  <th>Amount</th>
+                  <th>Date</th>
+                  <th class="col-right">Action</th>
+                </tr>
+              </thead>
+              <tbody id="transactionsTableBody"></tbody>
+            </table>
+          </div>
+
+          <div class="pagination-bar">
+            <div class="page-meta">
+              <span class="page-badge" id="currentPageBadge">Page 1</span>
+              <select id="pageSizeSelect" class="input-field page-size-select">
+                <option value="5">5 / page</option>
+                <option value="8" selected>8 / page</option>
+                <option value="15">15 / page</option>
+                <option value="30">30 / page</option>
+              </select>
+            </div>
+            <div class="page-controls">
+              <button id="prevPageBtn" class="page-btn" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+              </button>
+              <button id="nextPageBtn" class="page-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+              </button>
+            </div>
+          </div>
+        </main>
+
+        <!-- Right: Analytics Sidebar -->
+        <aside class="sidebar">
+
+          <!-- Spend split gauge -->
+          <div class="sidebar-card">
+            <div class="sidebar-card-header">
+              <span class="sidebar-card-title">Spend Ratio</span>
+              <span id="spendRatioPercent" class="spend-ratio-badge">0% spent</span>
+            </div>
+            <div class="gauge-bar">
+              <div id="spendProgressBar" class="gauge-fill" style="width:0%"></div>
+            </div>
+            <div class="gauge-labels">
+              <span>Income <strong id="spendIncomeLabel">₹0</strong></span>
+              <span>Expense <strong id="spendExpenseLabel">₹0</strong></span>
+            </div>
+          </div>
+
+          <!-- Monthly filter -->
+          <div class="sidebar-card">
+            <div class="sidebar-card-title" style="margin-bottom:14px">Monthly Report</div>
+            <div class="row-2">
+              <select id="reportMonth" class="input-field">
+                <option value="1">January</option><option value="2">February</option>
+                <option value="3">March</option><option value="4">April</option>
+                <option value="5">May</option><option value="6">June</option>
+                <option value="7">July</option><option value="8" selected>August</option>
+                <option value="9">September</option><option value="10">October</option>
+                <option value="11">November</option><option value="12">December</option>
+              </select>
+              <input type="number" id="reportYear" class="input-field" value="2026" style="width:80px">
+            </div>
+            <select id="reportTypeFilter" class="input-field" style="margin-top:10px">
+              <option value="" selected>All Types</option>
+              <option value="income">Income Only</option>
+              <option value="expense">Expense Only</option>
+            </select>
+            <button id="fetchReportBtn" class="btn-outline" style="margin-top:12px">Apply Filter</button>
+
+            <div class="monthly-summary">
+              <div>
+                <div class="monthly-label">Total</div>
+                <div class="monthly-value" id="monthlyTotal">₹0.00</div>
+              </div>
+              <div>
+                <div class="monthly-label">Count</div>
+                <div class="monthly-value accent-amber" id="monthlyCount">0</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export card -->
+          <div class="sidebar-card export-card">
+            <div class="export-head">
+              <div class="export-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              </div>
+              <div>
+                <div class="export-title">Export Report</div>
+                <div class="export-sub">Download as Excel (.xlsx)</div>
+              </div>
+            </div>
+            <button id="exportThisMonthBtn" class="btn-ghost-amber">⚡ Fill Current Month</button>
+            <div class="date-range-row">
+              <div class="date-group">
+                <label class="micro-label">From</label>
+                <input type="date" id="exportStartDate" class="input-field">
+              </div>
+              <span class="date-arrow">→</span>
+              <div class="date-group">
+                <label class="micro-label">To</label>
+                <input type="date" id="exportEndDate" class="input-field">
+              </div>
+            </div>
+            <button id="exportExcelBtn" class="btn-amber">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Download Excel
+            </button>
+            <div id="exportStatus" class="export-status"></div>
+          </div>
+
+        </aside>
+      </div>
+    </section>
+  </div>
+
+  <!-- ═══════════════ MODALS ═══════════════ -->
+
+  <!-- Add Transaction -->
+  <div id="txModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 class="modal-title">New Transaction</h3>
+        <button id="closeTxModal" class="close-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="txForm" class="modal-form">
+        <div class="field-group">
+          <label class="field-label" for="txName">Title / Name</label>
+          <input type="text" id="txName" class="input-field" placeholder="e.g. Monthly Salary" required>
+        </div>
+        <div class="row-2">
+          <div class="field-group">
+            <label class="field-label" for="txType">Type</label>
+            <select id="txType" class="input-field" required>
+              <option value="expense" selected>Expense</option>
+              <option value="income">Income</option>
+            </select>
+          </div>
+          <div class="field-group">
+            <label class="field-label" for="txAmount">Amount (₹)</label>
+            <input type="number" step="0.01" id="txAmount" class="input-field" placeholder="1500.00" required>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="txDescription">Description <span class="optional">(Optional)</span></label>
+          <input type="text" id="txDescription" class="input-field" placeholder="e.g. Supermarket shopping">
+        </div>
+        <button type="submit" class="btn-primary">Save Transaction</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Transaction Detail -->
+  <div id="txDetailModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 class="modal-title">Transaction Details</h3>
+        <button id="closeTxDetailModal" class="close-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="txDetailContent" class="detail-grid"></div>
+    </div>
+  </div>
+
+  <!-- Date Range Analytics -->
+  <div id="dateRangeModal" class="modal-overlay">
+    <div class="modal-box modal-wide">
+      <div class="modal-head">
+        <h3 class="modal-title">Date Range Analytics</h3>
+        <button id="closeDateRangeModal" class="close-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="row-3" style="margin-bottom:20px">
+        <div class="field-group">
+          <label class="field-label">Start Date</label>
+          <input type="date" id="drStartDate" class="input-field">
+        </div>
+        <div class="field-group">
+          <label class="field-label">End Date</label>
+          <input type="date" id="drEndDate" class="input-field">
+        </div>
+        <div class="field-group">
+          <label class="field-label">Type</label>
+          <select id="drType" class="input-field">
+            <option value="" selected>All Types</option>
+            <option value="income">Income</option>
+            <option value="expense">Expense</option>
+          </select>
+        </div>
+      </div>
+      <button id="applyDateRangeBtn" class="btn-primary" style="margin-bottom:20px">Analyze</button>
+      <div class="row-3" style="margin-bottom:20px">
+        <div class="mini-stat">
+          <span class="mini-stat-label">Min Amount</span>
+          <span id="drMinAmount" class="mini-stat-value income-color">₹0.00</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Max Amount</span>
+          <span id="drMaxAmount" class="mini-stat-value expense-color">₹0.00</span>
+        </div>
+        <div class="mini-stat">
+          <span class="mini-stat-label">Count</span>
+          <span id="drCount" class="mini-stat-value amber-color">0</span>
+        </div>
+      </div>
+      <div class="table-wrap" style="max-height:260px">
+        <table class="data-table">
+          <thead><tr><th>Title</th><th>Type</th><th>Amount</th><th>Date</th></tr></thead>
+          <tbody id="drResultsBody">
+            <tr><td colspan="4" class="empty-cell">Select a date range and click Analyze</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Account Settings -->
+  <div id="settingsModal" class="modal-overlay">
+    <div class="modal-box">
+      <div class="modal-head">
+        <h3 class="modal-title">Account Settings</h3>
+        <button id="closeSettingsModal" class="close-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="settingsForm" class="modal-form">
+        <div class="field-group">
+          <label class="field-label" for="updateName">Full Name</label>
+          <input type="text" id="updateName" class="input-field" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="updateEmail">Email Address</label>
+          <input type="email" id="updateEmail" class="input-field" required>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="updatePassword">New Password <span class="optional">(leave blank to keep)</span></label>
+          <input type="password" id="updatePassword" class="input-field" placeholder="••••••••">
+        </div>
+        <button type="submit" class="btn-primary">Update Profile</button>
+      </form>
+      <div class="danger-zone">
+        <h4 class="danger-title">Danger Zone</h4>
+        <p class="danger-desc">Permanently delete your account and all transaction records.</p>
+        <button id="deleteAccountBtn" class="btn-danger-full">Delete My Account &amp; All Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toasts -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
