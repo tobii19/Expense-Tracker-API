@@ -7,7 +7,7 @@ logger = logging.getLogger(__name__)
 
 resend.api_key = RESEND_API_KEY
 
-FROM_EMAIL = "onboarding@resend.dev"   # Replace with your verified sender later
+FROM_EMAIL = "meetpandit9875@gmail.com"   # Replace with your verified sender later
 
 
 def send_otp_email(receiver_email: str, otp: str):
