@@ -15,8 +15,12 @@ from downlaod_report.monthly import router as downlaod_router
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title="Expense Tracker API")
-
+app = FastAPI(
+    title="Expense Tracker API",
+    docs_url="/docs",
+    redoc_url="/redoc",
+    openapi_url="/openapi.json",
+)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
