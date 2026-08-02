@@ -79,7 +79,7 @@ Regards,
 Meet Pandit
 """
 )
-        with smtplib.SMTP("smtp.gmail.com", 587) as smtp:
+        with smtplib.SMTP("smtp.gmail.com", 144) as smtp:
             smtp.starttls()
             smtp.login(EMAIL, EMAIL_PASSWORD)
             smtp.send_message(message)
