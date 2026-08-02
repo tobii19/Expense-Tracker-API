@@ -38,8 +38,8 @@ app.include_router(update_router)
 app.include_router(downlaod_router)
 
 frontend_path = os.path.join(
-    os.path.dirname(os.path.dirname(__file__)),
-    "frontend",
+    os.path.dirname(__file__),
+    "frontend"
 )
 
 if os.path.exists(frontend_path):
