@@ -1,4 +1,4 @@
-# Virtual environments
+# Virtual Environment
 .venv/
 venv/
 env/
@@ -12,16 +12,17 @@ __pycache__/
 .env
 **/.env
 
-# VS Code
+# IDE
 .vscode/
+.idea/
 
-# Pytest
+# Test cache
 .pytest_cache/
 
 # Logs
 *.log
 
-# OS files
+# OS
 .DS_Store
 Thumbs.db
 
